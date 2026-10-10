@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>PRISM — Scientific Calculator</title>
+  <meta name="description" content="PRISM is a ruled-sheet scientific calculator with a printed tape, DEG/RAD modes and full keyboard control.">
+  <meta name="theme-color" content="#b7c2b2">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="instrument" id="app">
+
+    <div class="top">
+      <header class="bar">
+        <h1 class="brand">
+          <svg class="mark" viewBox="0 0 56 28" aria-hidden="true" focusable="false">
+            <path class="ray-in" d="M0 18 L11.8 18"/>
+            <path class="glass" d="M20 3 L32 25 L8 25 Z"/>
+            <path class="r1" d="M27 15 L56 6"/>
+            <path class="r2" d="M27 15 L56 10.2"/>
+            <path class="r3" d="M27 15 L56 14.4"/>
+            <path class="r4" d="M27 15 L56 18.6"/>
+            <path class="r5" d="M27 15 L56 22.8"/>
+            <path class="r6" d="M27 15 L56 27"/>
+          </svg>
+          <span>PRISM</span>
+        </h1>
+        <div class="bar-actions">
+          <button type="button" class="chip tape-toggle" id="btn-tape" aria-expanded="false" aria-controls="tape">Tape</button>
+          <button type="button" class="chip" id="btn-sci" aria-expanded="true" aria-controls="sci">Sci</button>
+        </div>
+      </header>
+
+      <section class="display" aria-label="Display">
+        <div class="strip" id="strip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="readout">
+          <span class="mode-tag" id="mode-tag">DEG</span>
+          <div class="expr" id="expr" aria-label="Expression"></div>
+          <div class="result" id="result">0</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="body">
+      <aside class="tape" id="tape" aria-label="Calculation history">
+        <div class="tape-inner">
+          <div class="tape-head">
+            <h2>Tape</h2>
+            <button type="button" class="linkish" id="btn-clear-tape" hidden>Clear</button>
+          </div>
+          <ol class="tape-list" id="tape-list"></ol>
+          <p class="tape-empty" id="tape-empty">Nothing printed yet. Finished sums land here — tap an expression to edit it, or a result to reuse it.</p>
+          <p class="tape-keys">
+            <kbd>s</kbd><kbd>c</kbd><kbd>t</kbd> sin cos tan · <kbd>S</kbd><kbd>C</kbd><kbd>T</kbd> inverse ·
+            <kbd>l</kbd> log · <kbd>n</kbd> ln · <kbd>r</kbd> √ · <kbd>p</kbd> π · <kbd>e</kbd> e ·
+            <kbd>a</kbd> Ans · <kbd>q</kbd> x² · <kbd>f</kbd> x! · <kbd>d</kbd> DEG/RAD · <kbd>h</kbd> tape · <kbd>Esc</kbd> clear
+          </p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="keys">
+
+          <section class="sci" id="sci" aria-label="Scientific functions">
+            <button type="button" class="key g1" data-act="fn" data-val="sin" aria-label="Sine">sin</button>
+            <button type="button" class="key g1" data-act="fn" data-val="cos" aria-label="Cosine">cos</button>
+            <button type="button" class="key g1" data-act="fn" data-val="tan" aria-label="Tangent">tan</button>
+            <button type="button" class="key g5" data-act="const" data-val="π" aria-label="Pi">π</button>
+
+            <button type="button" class="key g2" data-act="fn" data-val="asin" aria-label="Inverse sine">sin<sup>−1</sup></button>
+            <button type="button" class="key g2" data-act="fn" data-val="acos" aria-label="Inverse cosine">cos<sup>−1</sup></button>
+            <button type="button" class="key g2" data-act="fn" data-val="atan" aria-label="Inverse tangent">tan<sup>−1</sup></button>
+            <button type="button" class="key g5" data-act="const" data-val="e" aria-label="Euler's number e">e</button>
+
+            <button type="button" class="key g3" data-act="fn" data-val="log" aria-label="Base 10 logarithm">log</button>
+            <button type="button" class="key g3" data-act="fn" data-val="ln" aria-label="Natural logarithm">ln</button>
+            <button type="button" class="key g3" data-act="tenpow" aria-label="Ten to the power">10<sup>x</sup></button>
+            <button type="button" class="key g3" data-act="exppow" aria-label="e to the power">e<sup>x</sup></button>
+
+            <button type="button" class="key g4" data-act="fn" data-val="√" aria-label="Square root">√</button>
+            <button type="button" class="key g4" data-act="fn" data-val="∛" aria-label="Cube root">∛</button>
+            <button type="button" class="key g4" data-act="post" data-val="!" aria-label="Factorial">x!</button>
+            <button type="button" class="key g4" data-act="fn" data-val="abs" aria-label="Absolute value">|x|</button>
+
+            <button type="button" class="key g6" data-act="fn" data-val="sinh" aria-label="Hyperbolic sine">sinh</button>
+            <button type="button" class="key g6" data-act="fn" data-val="cosh" aria-label="Hyperbolic cosine">cosh</button>
+            <button type="button" class="key g6" data-act="fn" data-val="tanh" aria-label="Hyperbolic tangent">tanh</button>
+            <button type="button" class="key g4" data-act="recip" aria-label="Reciprocal">x<sup>−1</sup></button>
+
+            <div class="seg" role="group" aria-label="Angle unit">
+              <button type="button" class="seg-btn" data-act="angle" data-val="DEG" aria-pressed="true">DEG</button>
+              <button type="button" class="seg-btn" data-act="angle" data-val="RAD" aria-pressed="false">RAD</button>
+            </div>
+          </section>
+
+          <section class="pad" aria-label="Number pad">
+            <button type="button" class="key k-util k-clear" data-act="clear" aria-label="All clear">AC</button>
+            <button type="button" class="key k-util" data-act="paren" data-val="(" aria-label="Open parenthesis">(</button>
+            <button type="button" class="key k-util" data-act="paren" data-val=")" aria-label="Close parenthesis">)</button>
+            <button type="button" class="key k-util" data-act="back" aria-label="Backspace">
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 5h11v14H9L3 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M12.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            </button>
+
+            <button type="button" class="key k-num" data-act="digit" data-val="7">7</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="8">8</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="9">9</button>
+            <button type="button" class="key k-op" data-act="op" data-val="÷" aria-label="Divide">÷</button>
+
+            <button type="button" class="key k-num" data-act="digit" data-val="4">4</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="5">5</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="6">6</button>
+            <button type="button" class="key k-op" data-act="op" data-val="×" aria-label="Multiply">×</button>
+
+            <button type="button" class="key k-num" data-act="digit" data-val="1">1</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="2">2</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="3">3</button>
+            <button type="button" class="key k-op" data-act="op" data-val="−" aria-label="Subtract">−</button>
+
+            <button type="button" class="key k-util" data-act="sign" aria-label="Toggle sign">±</button>
+            <button type="button" class="key k-num" data-act="digit" data-val="0">0</button>
+            <button type="button" class="key k-num" data-act="dot" aria-label="Decimal point">.</button>
+            <button type="button" class="key k-op" data-act="op" data-val="+" aria-label="Add">+</button>
+
+            <button type="button" class="key k-op" data-act="op" data-val="^" aria-label="Power">x<sup>y</sup></button>
+            <button type="button" class="key k-util" data-act="const" data-val="Ans" aria-label="Previous answer">Ans</button>
+            <button type="button" class="key k-op" data-act="post" data-val="%" aria-label="Percent">%</button>
+            <button type="button" class="key k-op" data-act="pow2" aria-label="Square">x<sup>2</sup></button>
+          </section>
+
+          <button type="button" class="key eq" data-act="equals" aria-label="Equals">
+            <span class="eq-sym">=</span>
+            <span class="eq-fan" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </button>
+
+        </div>
+      </main>
+    </div>
+
+    <p class="sr-only" id="sr-status" role="status" aria-live="polite"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
